@@ -2,6 +2,7 @@
 A plugin for automatically linking to already existing files.
 
 This plugin is still very much in beta.
+![preview](https://user-images.githubusercontent.com/107559945/194766034-a580c2d6-e474-42d6-b086-b12bbd62b8ac.gif)
 
 ## Installation
 Just copy the files into the .obsidian/plugins directory in your vault.
