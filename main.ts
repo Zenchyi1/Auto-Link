@@ -1,9 +1,21 @@
-import { MarkdownView, Plugin, TFile, } from 'obsidian';
+import { App, MarkdownView, Plugin, TFile, PluginSettingTab, Setting } from 'obsidian';
 
+interface PluginSettings {
+	Settings: string;
+	useAlias: boolean;
+}
+
+const DEFAULT_SETTINGS: PluginSettings = {
+	Settings: 'default',
+	useAlias: true
+}
 
 export default class autoLink extends Plugin {
 	private filesNames = [];
-	onload() {
+	settings: Setting;
+	async onload() {
+		await this.loadSettings();
+
 		this.retrieveFileNames();
 		//check for any new links
 		this.registerEvent(this.app.vault.on('modify', () => {
@@ -37,19 +49,32 @@ export default class autoLink extends Plugin {
 			id: 'getArray',
 			name: 'getArray',
 			callback: () => {
+				console.log("aliases: " + this.settings.useAlias);
 				console.log(this.filesNames);
 
 			}
 		});
 
 
+		this.addSettingTab(new SettingTab(this.app, this));
 
 	}
+	
 	onunload() {
 		//shouldn't need to unload anything
 	}
+	
+	async loadSettings() {
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
+
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
+
 	private addFile(file, title: string) {
 		this.filesNames.push({ "title": title + " ", "isAlias": false });
+		if(this.settings.useAlias){
 		const data = this.app.metadataCache.getFileCache(file);
 		if (!(data.frontmatter == undefined)) {
 			if (!(data.frontmatter.aliases == undefined)) {// dont ask
@@ -63,8 +88,7 @@ export default class autoLink extends Plugin {
 				}
 			}
 		}
-
-
+	}
 
 	}
 
@@ -91,4 +115,33 @@ export default class autoLink extends Plugin {
 		}
 	}
 }
+class SettingTab extends PluginSettingTab {
+	plugin: autoLink;
+
+	constructor(app: App, plugin: MyPlugin) {
+		super(app, plugin);
+		this.plugin = plugin;
+	}
+
+	display(): void {
+		const {containerEl} = this;
+
+		containerEl.empty();
+
+		containerEl.createEl('h2', {text: 'Settings.'});
+
+		new Setting(containerEl)
+			.setName('Alias')
+			.setDesc('whether or not to link and scan aliases. Doing so may result in lag on large Vaults')
+			.addToggle((toggle) =>
+			toggle
+			  .setValue(this.plugin.settings.useAlias)
+			  .onChange(async (value) => {
+				this.plugin.settings.useAlias = value;
+				await this.plugin.saveSettings();
+			  }),
+		  );
+	}
+}
+
 
