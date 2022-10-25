@@ -1,4 +1,4 @@
-import { MarkdownView, Plugin, } from 'obsidian';
+import { MarkdownView, Plugin, TFile, } from 'obsidian';
 
 
 export default class autoLink extends Plugin {
@@ -8,14 +8,14 @@ export default class autoLink extends Plugin {
 		//check for any new links
 		this.registerEvent(this.app.vault.on('modify', () => {
 			const view: any = this.app.workspace.getActiveViewOfType(MarkdownView);
-			let lineCount: number = view?.editor.getCursor().line;
-			if ((lineCount - 5) < 1) {
-				lineCount = 5
+			const cursorLine: number = view?.editor.getCursor().line;
+			let lineCount = cursorLine - 5;
+			if (cursorLine < 5) {
+				lineCount = 0;
 			}
-			for (let i = lineCount; i > lineCount - 5; i--) { // checking last 5 lines since i assume no one can write that much within one save, might make problems with copypasted text
+			for (let i = cursorLine; i > lineCount; i--) { // checking last 5 lines since i assume no one can write that much within one save, might make problems with copypasted text
 				const line: string = view.editor.getLine(i);
-				console.log(i);
-				this.filesNames.some(v => this.checkAndReplace(line, v, i))
+				this.filesNames.some(v => this.checkAndReplace(line, v.title, i, v))
 			}
 		}));
 
@@ -33,27 +33,52 @@ export default class autoLink extends Plugin {
 
 		}));
 
+		this.addCommand({
+			id: 'getArray',
+			name: 'getArray',
+			callback: () => {
+				console.log(this.filesNames);
 
-		// }
-		// just for development 
-		// 	this.addCommand({
-		// 		id: 'getArray',
-		// 		name: 'getArray',
-		// 		callback: () => {
-		// 			console.log(this.filesNames);
-		// 		}
-		// 	});
-		// }
+			}
+		});
+
+
 
 	}
 	onunload() {
+		//shouldn't need to unload anything
+	}
+	private addFile(file, title: string) {
+		this.filesNames.push({ "title": title + " ", "isAlias": false });
+		const data = this.app.metadataCache.getFileCache(file);
+		if (!(data.frontmatter == undefined)) {
+			if (!(data.frontmatter.aliases == undefined)) {// dont ask
+				for (const alias of data.frontmatter.aliases) {
+					const obj = {
+						"title": alias + " ",
+						"isAlias": true,
+						"originalTitle": title
+					}
+					this.filesNames.push(obj);
+				}
+			}
+		}
+
+
+
 	}
 
-	private checkAndReplace(line: string, v: string, i: number) {
+	private checkAndReplace(line: string, v: string, i: number, info: object) {
+
 		if (line.includes(v)) {
 			const view = this.app.workspace.getActiveViewOfType(MarkdownView);
 			const re = new RegExp(v, 'g');
-			const newStr = line.replace(re, "[[" + v.slice(0, -1) + "]] ");
+			let newStr = "";
+			if (info.isAlias) {
+				newStr = line.replace(re, "[[" + info.originalTitle + "|" + v.slice(0, -1) + "]] ");
+			} else {
+				newStr = line.replace(re, "[[" + v.slice(0, -1) + "]] ");
+			}
 			view?.editor.setLine(i, newStr);
 		}
 		return;
@@ -62,11 +87,7 @@ export default class autoLink extends Plugin {
 	private retrieveFileNames() {
 		const files = this.app.vault.getMarkdownFiles();
 		for (let i = 0; i < files.length; i++) {
-			this.filesNames.push(files[i].basename + " ");
-			//Space is added to differentiate between non linked and linked words,
-			//  as linked words would have a ] right after, i did this to avoid checking 
-			//  for already existing links during every check as this would add complexity which is
-			//  really not needed
+			this.addFile(files[i], files[i].basename);
 		}
 	}
 }
