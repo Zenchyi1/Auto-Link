@@ -28,8 +28,9 @@ function addFile(file: TFile, alias: boolean) {
     }
 }
 
-export function retrieveFileNames(alias: boolean) {
+export async function retrieveFileNames(alias: boolean) {
     filesNames.clear();
+    await new Promise(resolve => setTimeout(resolve, 5000)); // not pretty, needs a fix
     const files = app.vault.getMarkdownFiles();
     for (let i = 0; i < files.length; i++) {
         addFile(files[i], alias);

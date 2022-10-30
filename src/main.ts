@@ -31,17 +31,17 @@ export default class autoLink extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		retrieveFileNames(this.settings.useAlias);
+
 
 		this.registerEvent(this.app.vault.on('modify', () => {
 			// check for new links
 			const view: any = this.app.workspace.getActiveViewOfType(MarkdownView);
 			const cursorLine: number = view?.editor.getCursor().line;
-			let lineCount: number = cursorLine - 5;
-			if (cursorLine < 5) {
+			let lineCount: number = cursorLine - 3;
+			if (cursorLine < 3) {
 				lineCount = 0;
 			}
-			for (let i = cursorLine; i > lineCount; i--) { // checking last 5 lines since i assume no one can write that much within one save, might make problems with copypasted text
+			for (let i = cursorLine; i > (lineCount - 1); i--) {
 				const line: string = view.editor.getLine(i);
 				for (const [key, value] of filesNames) {
 					checkAndReplace(line, key + " ", i, value, this.settings.case_sensitive);
@@ -68,7 +68,7 @@ export default class autoLink extends Plugin {
 
 
 		this.addSettingTab(new SettingTab(this.app, this));
-
+		retrieveFileNames(this.settings.useAlias);
 	}
 
 	onunload() {
