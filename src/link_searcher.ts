@@ -3,11 +3,7 @@ import { TFile, MarkdownView } from "obsidian";
 export function checkAndReplace(line: string, v: string, i: number, file: TFile, case_sensitive: boolean) {
     if (case_sensitive) {
         if (line.includes(v)) {
-            let alias: boolean;
-            if (file.basename != v) {
-                alias = true;
-            } else { alias = false }
-
+            const alias: boolean = ((file.basename.toLowerCase() === v.toLowerCase().slice(0, -1)) ? false : true);
             const view = app.workspace.getActiveViewOfType(MarkdownView);
             const re = new RegExp(v, 'g');
             let newStr = "";
@@ -23,13 +19,7 @@ export function checkAndReplace(line: string, v: string, i: number, file: TFile,
             const start = line.toLowerCase().indexOf(v.toLocaleLowerCase());
             const end = start + v.length;
             const word = line.substring(start, end);
-            console.log(word);
-            console.log('found ' + v + ' in line ' + i);
-            let alias: boolean;
-            if (file.basename.toLowerCase() != v) {
-                alias = true;
-            } else { alias = false }
-
+            const alias: boolean = ((file.basename.toLowerCase() === v.toLowerCase().slice(0, -1)) ? false : true);
             const view = app.workspace.getActiveViewOfType(MarkdownView);
             const re = new RegExp(word, 'g');
             let newStr = "";
