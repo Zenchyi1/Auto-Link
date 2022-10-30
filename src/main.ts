@@ -15,11 +15,13 @@ import {
 interface PluginSettings {
 	Settings: string;
 	useAlias: boolean;
+	case_sensitive: boolean;
 }
 
 const DEFAULT_SETTINGS: PluginSettings = {
 	Settings: 'default',
-	useAlias: true
+	useAlias: true,
+	case_sensitive: false
 }
 
 export default class autoLink extends Plugin {
@@ -42,7 +44,7 @@ export default class autoLink extends Plugin {
 			for (let i = cursorLine; i > lineCount; i--) { // checking last 5 lines since i assume no one can write that much within one save, might make problems with copypasted text
 				const line: string = view.editor.getLine(i);
 				for (const [key, value] of filesNames) {
-					checkAndReplace(line, key + " ", i, value);
+					checkAndReplace(line, key + " ", i, value, this.settings.case_sensitive);
 				}
 			}
 		}));
@@ -108,6 +110,17 @@ class SettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						this.plugin.settings.useAlias = value;
 						retrieveFileNames(value);
+						await this.plugin.saveSettings();
+					}),
+			);
+		new Setting(containerEl)
+			.setName('Case Sensitivity')
+			.setDesc('Considers Case when searching for links')
+			.addToggle((toggle) =>
+				toggle
+					.setValue(this.plugin.settings.case_sensitive)
+					.onChange(async (value) => {
+						this.plugin.settings.case_sensitive = value;
 						await this.plugin.saveSettings();
 					}),
 			);
