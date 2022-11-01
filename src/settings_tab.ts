@@ -37,7 +37,7 @@ export default class linkSettingsTab extends PluginSettingTab {
                 }));
 
         new Setting(containerEl)
-            .setName("Scanner mode")//place holder
+            .setName("Scanner mode")//place holder for now
             .setDesc("When to search for new Links")
             .addDropdown(dropdown => dropdown
                 .addOption("on_modify", "On Modify")

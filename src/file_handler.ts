@@ -28,7 +28,7 @@ class fileHandler {
         if (alias) {
             const data = app.metadataCache.getFileCache(file);
             if (!(data?.frontmatter == undefined)) {
-                if (!(data.frontmatter.aliases == undefined)) {// dont ask
+                if (!(data.frontmatter.aliases == undefined)) {
                     for (const alias of data.frontmatter.aliases) {
                         this.filenames.set(alias, file);
 
