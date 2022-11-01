@@ -1,13 +1,22 @@
-import { TAbstractFile, TFile } from "obsidian";
+import { TFile } from "obsidian";
 
 class fileHandler {
     public filenames = new Map<string, TFile>();
 
-    public removeFile(file: TAbstractFile) {
+    public removeFile(file: any) {
         for (const [key, value] of this.filenames) {
             if (value == file) { this.filenames.delete(key) }
         }
     }
+
+    public renameFile(file: TFile, path: string, plugin: any) {
+        for (const value of this.filenames.values()) {
+            if (value == file) { this.removeFile(file) }
+        }
+        this.addFile(file, plugin.settings.addAlias);
+    }
+
+
 
     public printFiles() {
         console.log([...this.filenames.entries()]);

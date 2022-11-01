@@ -1,20 +1,14 @@
 import { Plugin } from 'obsidian';
 import { linkSettings, DEFAULT_SETTINGS } from './settings';
 import linkSettingsTab from './settings_tab';
-import { insert_links } from './insertLinks';
 import { file_handler } from './file_handler';
+import { event_manager } from './event_manager';
 export default class autoLink extends Plugin {
     settings: linkSettings;
 
     async onload() {
         await this.loadSettings();
-        this.registerEvent(this.app.vault.on('modify', () => {
-            insert_links.search(this.settings);
-        }));
-
-        this.registerEvent(this.app.vault.on('delete', (file) => {
-            file_handler.removeFile(file);
-        }));
+        event_manager.setup(this);
 
 
         this.addCommand({
