@@ -1,5 +1,5 @@
 {
-	"name": "Auto Link",
+	"name": "Auto_Link",
 	"version": "1.0.0",
 	"description": "Obsidian plugin for automatically linking to already existing files",
 	"main": "main.js",
