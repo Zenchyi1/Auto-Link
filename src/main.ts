@@ -18,7 +18,8 @@ export default class autoLink extends Plugin {
                 file_handler.printFiles();
             }
         });
-        this.app.workspace.onLayoutReady(() => file_handler.retrieveFileNames(this.settings.addAlias));
+
+        this.app.workspace.onLayoutReady(() => file_handler.retrieveFileNames(this.settings.addAlias)); // wait until files are loaded
         this.addSettingTab(new linkSettingsTab(this.app, this));
 
     }

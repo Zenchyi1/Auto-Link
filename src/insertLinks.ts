@@ -1,9 +1,11 @@
 import { TFile, MarkdownView } from "obsidian";
 import { file_handler } from "src/file_handler";
+import { helper } from "./helper";
 import { linkSettings } from "./settings";
 export class insertLinks {
     private view: any = app.workspace.getActiveViewOfType(MarkdownView)
     public search(settings: linkSettings) {
+        if (helper.inBlock(this.view.editor)) { return; } // return if in code block or yaml
         const cursorLine: number = this.view?.editor.getCursor().line;
         let lineCount: number = cursorLine - 3;
         if (cursorLine < 3) {
