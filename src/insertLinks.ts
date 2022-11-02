@@ -3,16 +3,16 @@ import { file_handler } from "src/file_handler";
 import { helper } from "./helper";
 import { linkSettings } from "./settings";
 export class insertLinks {
-    private view: any = app.workspace.getActiveViewOfType(MarkdownView)
     public search(settings: linkSettings) {
-        if (helper.inBlock(this.view.editor)) { return; } // return if in code block or yaml
-        const cursorLine: number = this.view?.editor.getCursor().line;
+        const view: any = app.workspace.getActiveViewOfType(MarkdownView)
+        if (helper.inBlock(view.editor)) { return; } // return if in code block or yaml
+        const cursorLine: number = view?.editor.getCursor().line;
         let lineCount: number = cursorLine - 3;
         if (cursorLine < 3) {
             lineCount = 0;
         }
         for (let i = cursorLine; i > (lineCount - 1); i--) {
-            const line: string = this.view.editor.getLine(i);
+            const line: string = view.editor.getLine(i);
             for (const [key, value] of file_handler.filenames) {
                 this.check_and_insert_link(line, key + " ", i, value, settings.ignoreCase);
             }

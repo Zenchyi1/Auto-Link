@@ -1,6 +1,6 @@
 {
 	"id": "Auto_Link",
-	"name": "Auto_Link",
+	"name": "Auto Link",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Plugin for automatically adding links to already existing files.",

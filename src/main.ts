@@ -3,6 +3,7 @@ import { linkSettings, DEFAULT_SETTINGS } from './settings';
 import linkSettingsTab from './settings_tab';
 import { file_handler } from './file_handler';
 import { event_manager } from './event_manager';
+
 export default class autoLink extends Plugin {
     settings: linkSettings;
 
