@@ -29,11 +29,18 @@ class fileHandler {
             const data = app.metadataCache.getFileCache(file);
             if (!(data?.frontmatter == undefined)) {
                 if (!(data.frontmatter.aliases == undefined)) {
+                    if(typeof(data.frontmatter.aliases) == "string"){
+                        const aliasArr = data.frontmatter.aliases.split(",");
+                        for(const alias of aliasArr){
+                            this.filenames.set(alias.trim(), file);
+                        }
+                    }else{
                     for (const alias of data.frontmatter.aliases) {
                         this.filenames.set(alias, file);
-
                     }
+                    
                 }
+                                }
             }
         }
     }
