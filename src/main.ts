@@ -9,6 +9,7 @@ export default class autoLink extends Plugin {
 
     async onload() {
         await this.loadSettings();
+        event_manager.setScanner(this.settings.scanning_mode);
         event_manager.setup(this);
 
 

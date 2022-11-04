@@ -1,5 +1,4 @@
 import { Editor } from "obsidian";
-
 class Helper {
     private isYaml(editor: Editor) {
         if (editor.getLine(0) !== "---") {

@@ -1,4 +1,3 @@
-
 export interface linkSettings {
     addAlias: boolean,
     ignoreCase: boolean
@@ -8,5 +7,5 @@ export interface linkSettings {
 export const DEFAULT_SETTINGS: linkSettings = {
     addAlias: true,
     ignoreCase: true,
-    scanning_mode: "on_modify"
+    scanning_mode: "modify"
 }

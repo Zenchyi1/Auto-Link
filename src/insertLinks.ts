@@ -1,25 +1,7 @@
 import { TFile, MarkdownView } from "obsidian";
-import { file_handler } from "src/file_handler";
-import { helper } from "./helper";
-import { linkSettings } from "./settings";
-export class insertLinks {
-    public search(settings: linkSettings) {
-        const view: any = app.workspace.getActiveViewOfType(MarkdownView)
-        if (helper.inBlock(view.editor)) { return; } // return if in code block or yaml
-        const cursorLine: number = view?.editor.getCursor().line;
-        let lineCount: number = cursorLine - 3;
-        if (cursorLine < 3) {
-            lineCount = 0;
-        }
-        for (let i = cursorLine; i > (lineCount - 1); i--) {
-            const line: string = view.editor.getLine(i);
-            for (const [key, value] of file_handler.filenames) {
-                this.check_and_insert_link(line, key + " ", i, value, settings.ignoreCase);
-            }
-        }
-    }
+class insertLinks {
 
-    private check_and_insert_link(line: string, v: string, i: number, file: TFile, ignoreCase: boolean) {
+    public check_and_insert_link(line: string, v: string, i: number, file: TFile, ignoreCase: boolean) {
         if (!ignoreCase) {
             if (line.includes(v)) {
                 const alias: boolean = ((file.basename.toLowerCase() === v.toLowerCase().slice(0, -1)) ? false : true);
