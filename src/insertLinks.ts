@@ -24,7 +24,7 @@ export class insertLinks {
             if (line.includes(v)) {
                 const alias: boolean = ((file.basename.toLowerCase() === v.toLowerCase().slice(0, -1)) ? false : true);
                 const view = app.workspace.getActiveViewOfType(MarkdownView);
-                if(helper.inBlock(view.editor, i)) { return; } // return if in code block or yaml
+                if(helper.inBlock(view!.editor, i)) { return; } // return if in code block or yaml
                 const re = new RegExp(v, 'g');
                 let newStr = "";
                 if (alias) {
@@ -41,7 +41,7 @@ export class insertLinks {
                 const word = line.substring(start, end);
                 const alias: boolean = ((file.basename.toLowerCase() === v.toLowerCase().slice(0, -1)) ? false : true);
                 const view = app.workspace.getActiveViewOfType(MarkdownView);
-                if(helper.inBlock(view.editor, i)) { return; } // return if in code block or yaml
+                if(helper.inBlock(view!.editor, i)) { return; } // return if in code block or yaml
                 const re = new RegExp(word, 'g');
                 let newStr = "";
                 if (alias) {
